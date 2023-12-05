@@ -34,7 +34,7 @@ def threaded(connection):
 
         url = url[0]
 
-        data = (method + ' /' + url.split('/')[1] + ' ' + data_first_line[2] + '\n').encode('utf-8')
+        data = (method + ' ' + url[url.find('/'):] + ' ' + data_first_line[2] + '\n').encode('utf-8')
         data += ('\n'.join(decode_data[1:])).encode('utf-8')
         run_proxy_server(connection, url, port, data)
 
@@ -43,6 +43,8 @@ def threaded(connection):
 def run_proxy_server(connection, url, port, data):
     s = socket(AF_INET, SOCK_STREAM)
     # connect to the server
+    if url.endswith('/'):
+        url = url[:-1]
     s.connect((url, port))
     # send the data to the server
     s.send(data)
